@@ -8,7 +8,12 @@
 %	LOGO SECTION
 %----------------------------------------------------------------------------------------
 
-\includegraphics[width = 4cm]{./figures/imperial}\\[0.5cm] 
+
+    \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north west,inner sep=1cm] at (current page.north west)
+          {\includegraphics[width = 4cm]{./figures/imperial}\\[0.5cm] };
+    \end{tikzpicture}
+
 
 \begin{center} % Center remainder of the page
 
@@ -32,12 +37,12 @@
 
 %\begin{minipage}{0.4\hsize}
 \begin{center}
-\textit{Authors:}\\
+\textbf{Authors:}\\
 Sam Taylor - 01705109\\
 Martin Prusa - 01713176\\
-Leonardo Garofalo \\
-Katherine Zhang \\
-Maximus Wickham \\
+Leonardo Garofalo - 01746454\\
+Katherine Zhang - 01504365\\
+Maximus Wickham - 01717673\\
 Matilde Piccoli - 01764158 \\
 \end{center}
 \vspace{2cm}
