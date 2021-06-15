@@ -37,15 +37,7 @@
 \newpage
 \section{Project Management}
 
-The given timeline for the project was 5 weeks. The first week was allocated for research and planning. Each member carried out research on their own module and a meeting was held to identify the main tasks and create a tentative project timeline. From the second week on-wards, bi-weekly meetings were held: one meeting at the beginning of the week to set the targets for that week and one meeting in the middle of the week to check up on progress. Week 2 was planned to work on the basic functionalities for each module so that a very basic prototype of the rover could be put together. In week 3, more sophisticated implementations and additional functions were added. By the end of week 4, the design of each module was finalised and integration of the whole rover was completed. The final week of the project was used to clean up any issues with the integrated rover and make final adjustments. 
-
-\textbf{Meeting Structure:}
-
-At the beginning of each week we held a 45 minute meeting. Each member would take 5 minutes to update the group on their progress on the targets set for the previous week, discuss any issues they found and set new targets for the week. Midway through the week we had a brief 20 minute meeting to check in on everyone’s progress and give the opportunity for the members to bring up any problems or difficulties they might have ran into and adjust plans accordingly.
-
-\textbf{Tools Used for Project Management:}
-
-A Gantt chart was used to illustrate the main tasks to be completed for each module and set deadlines for their completion. It served as an effective method for tracking progress and keeping on track.
+The given timeline for the project was 5 weeks. The project was split into 5 phases. The first week was used to analyse the project brief and break it down into requirements for each module. The following Gantt chart was used to set the tasks to be completed for each module and approximate deadlines for each task to be completed.
 
 \begin{figure}[hbt]
     \centering
@@ -54,54 +46,47 @@ A Gantt chart was used to illustrate the main tasks to be completed for each mod
     \label{fig:GanttChart}
 \end{figure}
 
-The productivity software Notion was also used for each member to make notes of their initial design process, development and testing. It provided an easy method to share progress with the rest of the team. The shared calendar was used to set dates of meetings and mark internal deadlines. Git was used for version control.
+The Gantt chart shows project progress from the second week onwards. In week 2, it was planned to work on the basic functionalities of each module e.g. the server for the command module, communication between ESP32 and the server, control of the motor based on data from the optical sensor. In week 3, the basic functionalities were completed and more sophisticated functionalities were considered. By the end of week 4, the design of each module was finalised. The focus of week 5 was testing of the full rover with the final versions of each module. 
+ 
+From the second week on-wards, bi-weekly meetings were held. At the beginning of each week, we held a 45-minute meeting. Each member would take 5 minutes to update the group on their progress on the targets set for the previous week, discuss any issues they found and set new targets for the week. Midway through the week, we had a brief 20-minute meeting to check in on everyone’s progress and give the opportunity for the members to bring up any problems or difficulties they might have run into and adjust plans accordingly.
+ 
+The productivity software Notion was also used for each member to make notes of their initial design process, development and testing. It provided an easy method to share progress with the rest of the team. The shared calendar was used to set dates of meetings and mark internal deadlines. A GitHub organisation was created and used for version control for all modules.
 
 \newpage
 \section{Design Process}
 \subsection{Structural and Functional Design}
 
-;;;Based on the brief given, the following requirement diagram was created:
+Based on the brief given, the following requirement diagram was created. The diagram details the high level requirements of the rover system and the low level functionalities required to achieve them.
 
 \begin{figure}[hbt]
     \centering
-    \includegraphics[scale = 0.6]{Requirements.pdf}
-    \caption{}
+    \includegraphics[scale = 0.4, trim={0cm 8cm 0cm 3cm},clip]{Requirements.pdf}
+    \caption{Requirement diagram}
     \label{fig:RequirementDiagram}
 \end{figure}
 
-
-
-
-
-The structural design for the full rover was as follows:
-
+The structural design for the full rover system is shown below. The subsystems of the rover system are shown with their internal components and the interactions between different components of different subsystems are drawn out. 
 \begin{figure}[hbt]
     \centering
     \includegraphics[scale = 0.5, trim={3cm 2cm 2cm 2cm},clip]{StructuralDiagram (1).pdf}
-    \caption{Context diagram}
+    \caption{Block diagram showing structural design of rover system}
+    \label{fig:StructuralDesign}
 \end{figure}
 
+The interactions between the rover system and external actors are shown in the diagram below.
+\begin{figure}[hbt!]
+\centering
+  \includegraphics[scale = 0.28, trim={0, 6cm, 0, 3cm},clip]{Context.pdf}
+  \caption{Diagram showing interactions between rover system and external actors}
+  \label{fig:ContextDiagram}
+\end{figure}
 
-
-Through discussion with the individual modules, the design criteria for the full rover was decided to be as follows:
-\begin{itemize}
-    \item The rover must be able to receive commands and send data to the serve remotely.
-    \item The rover must manage its power supply and return to the charging station when the supply is low.After charging, the rover must return to its previous coordinates.
-    \item The rover must be able to detect objects within a ?? radius and build a map of its surroundings.
-    \item The rover must be able to calculate the most efficient path to avoid obstacles and reach the desired location.
-    \item The rover must be able to drive at different speeds and change its speed when commanded by the server with a response time of ?? and an accuracy of??
-    \item Given specific movement commands, the rover must respond with an accuracy of??
-    \item Given specific coordinates, the rover must find the most efficient path to that point, drive to that point, avoiding obstacles and updating the map with any new obstacles found. 
-    \item If left on autonomous mode, the rover must search for all coloured balls, save their coordinates and drive to each one.
-\end{itemize}
-
-\newpage
 
 \subsection{Problem Definition and Design Criteria}
 
 \subsubsection{Drive}
 
-For the drive subsystem the following were identified as the functional requirements to be implemented: 
+For the drive subsystem, the following were identified as the functional requirements to be implemented: 
 \begin{enumerate} %\itemsep-0.2em
     \item Translate the commands from the control unit into movement instructions for the two motors, in terms of angle and distance to be computed
     \item Move the rover to the specified point in the coordinates system, controlling the speed and direction of the motors via the setting of the SMPS and H-bridge parameters in the Arduino code
@@ -115,22 +100,22 @@ In accordance with these requirements, the design criteria on the base of which 
     \item optimal moving algorithm to compute the fastest route in the smallest amount of time
     \item precision of the movements with a 10\% accepted error in the tacking of the location, due to the optical sensor limits
 \end{enumerate}
-The main structure of the drive subsystem, shown in diagram (???), could be divided into two main elements, the two motors and the optical sensor.
+The main structure of the drive subsystem could be divided into two main elements, the two motors and the optical sensor.
 
 \textbf{Motors}
 
-The main elements we had to focus on were the functionality of the SMPS and H-bridge, and the design of a control algorithm to be implemented in the Arduino. For the first part, an analysis of the relevant material and specifications had been pursed and, in a second moment, it was decided with the energy unit to use a reference voltage of 5V for the output of the SMPS (input of the H-bridge). After some testing with a maximum duty cycle for the SMPS, it was concluded that this reference voltage would lead to a maximum speed of the wheels of 60 rpm, a satisfactory speed for the rover to use and yet small enough for the optical sensor data to be reliable.
+The main elements we had to focus on were the functionality of the SMPS and H-bridge, and the design of a control algorithm to be implemented in the Arduino. For the first part, an analysis of the relevant material and specifications had been pursued and, in a second moment, it was decided with the energy unit to use a reference voltage of 5V for the output of the SMPS (input of the H-bridge). After some testing with a maximum duty cycle for the SMPS, it was concluded that this reference voltage would lead to a maximum speed of the wheels of 60 rpm, a satisfactory speed for the rover to use and yet small enough for the optical sensor data to be reliable.
 
 \textbf{Optical sensor}
 
 The optical data had to be analysed via the Arduino for different surfaces and, after adjusting the lens of the optical sensor, we managed to achieve an increase in the quality of the distance measurements. However, after some testing, we concluded that the sensor would give reliable data only for specific surface and an alternative way of computing the rover’s change in location had to be implemented for surface too uniform or reflective. 
 
-In general, the drive unit development consisted in the coding of Arduino programs comprehensive of the all the functional requirements of the subsystem, alongside with measurements of the SMPS parameters and wheels’ movements. Due to the large number of Arduino code’s versions, Github was found to be a useful tool to keep track of the process and provide the integration unit with updated code for the parallel testing of the whole rover. 
+In general, the drive unit development consisted in the coding of Arduino programs comprehensive of all the functional requirements of the subsystem, alongside measurements of the SMPS parameters and wheels’ movements. Due to a large number of Arduino code, Github was found to be a useful tool to keep track of the process and provide the integration unit with updated code for the parallel testing of the whole rover. 
 
 \newpage
 
 \subsubsection{Energy}
-The energy subsystem can be split into 4 top level sections which all combine to provide battery power and charging to the rover. These can then be broken down into smaller subsections which are more manageable and easier to test individually (Table \ref{tab:EnergySpec}). This also allows for more unique features to be added later on in the process. 
+The energy subsystem can be split into 4 top-level sections which all combine to provide battery power and charging to the rover. These can then be broken down into smaller subsections which are more manageable and easier to test individually (Table \ref{tab:EnergySpec}). This also allows for more unique features to be added later on in the process. 
 
 \begin{table}[htp]
 \renewcommand{\arraystretch}{1.3}
@@ -147,7 +132,7 @@ The energy subsystem can be split into 4 top level sections which all combine to
                                                   & Cell Safety    & \parbox{0.61\linewidth}{$I_{In}^{Max} = 250mA$, $I_{Out}^{Max} = 500mA$, $V_{Bat}^{Max} = 3.7V$, $V_{Bat}^{Min} = 2.3V$}            \\
                                                   & Rover Range     & 
                                                   \parbox{0.61\linewidth}{Work out Rover range from Drive current and speed} \\\midrule
-\multicolumn{1}{l}{{\multirow{3}{*}{SMPS}}}       & Charging Buck/Boost        & \parbox{0.61\linewidth}{PV voltage                                                         stepped down to battery voltage}            \\
+\multicolumn{1}{l}{{\multirow{3}{*}{SMPS}}}       & Charging Buck/Boost        & \parbox{0.61\linewidth}{PV voltage                                             lithium-basedtepped down to battery voltage}            \\
                                                   & Discharging Buck/Boost    & \parbox{0.61\linewidth}{Battery voltage stepped down to motor control voltage} \\ 
                                                   & Drive Current Required &
                                                   \parbox{0.61\linewidth}{$I_{Drive}^{Max}$ = 550mA} \\ \midrule
@@ -162,15 +147,15 @@ The energy subsystem can be split into 4 top level sections which all combine to
 
 \textbf{Design Philosophy}
 
-The energy subsection would require a lot of initial research into lithium based cells (LiFePO cells were provided) as these have never been covered as a module. A document was made which collated the various amounts of research into cell charging/discharging, safety and PV panels. Then a process of simple testing ensued to characterise some of the cells and PV panels. After this was finished, the direction to take became clearer and work based upon Gantt diagram (\ref{fig:GanttChart}) began. The aim was to investigate the variety of options available which would allow me to pick and choose the best. This did lead to a number of dead-ends but in many cases a lot was learned from these and subsequently improved on the overall design.
+The energy subsection would require a lot of initial research into lithium-based cells (LiFePO cells were provided) as these have never been covered as a module. A document was made which collated the various amounts of research into cell charging/discharging, safety and PV panels. Then a process of simple testing ensued to characterise some of the cells and PV panels. After this was finished, the direction to take became clearer and work based upon the Gantt diagram (\ref{fig:GanttChart}) began. The aim was to investigate the variety of options available which would allow me to pick and choose the best. This did lead to a number of dead-ends but in many cases, a lot was learned from these and subsequently improved on the overall design.
 
-Due to the large amounts of code required for testing, a number of files were made which would be uploaded to Github. A final Arduino program was made towards the end of the project which could combine all the functions from the various files. These will have been individually tested to ensure they work. Ideally a final test would also be performed but due to possible defects in the cell supply, this was never realised.
+Due to the large amounts of code required for testing, a number of files were made which would be uploaded to Github. A final Arduino program was made towards the end of the project which could combine all the functions from the various files. These will have been individually tested to ensure they work. Ideally, a final test would also be performed but due to possible defects in the cell supply, this was never realised.
 
 \newpage
 
 
 \subsubsection{Vision}
-The function of the vision system was broken into three general objectives of which the team agreed the vision system should achieve (See objectives below). We agreed aspects like rover position and path finding would be better tackled by different subsystems. The following diagram shows the three main functions of Vision.
+The function of the vision system was broken into three general objectives of which the team agreed the system should achieve (See objectives below). We agreed aspects like rover position and pathfinding would be better tackled by different subsystems. The following diagram shows the three main functions of Vision.
 
 \begin{figure}[hbt!]
     \centering
@@ -180,22 +165,22 @@ The function of the vision system was broken into three general objectives of wh
 \end{figure}
 
 \smallbreak
-After this high-level design i broke down each high level objective into a series of smaller objectives with several criteria which the subsystem would have to be meet to successfully accomplish its high level functionality. 
+After this high-level design, each objective was broken down into a series of smaller targets with several criteria which the subsystem would have to meet to successfully accomplish its high-level functionality. 
 \smallbreak
 \textbf{Ball detection:}
 
-The diagram outlines a basic strategy for approaching the detection of balls through a process of highlighting, filtering and calculating. Each  ball occupies its own spectrum of colours in varying brightness conditions this spectrum can be highlighted so that we determine the maximum and minimum pixels of balls.Each block was designed to be testable by certain criteria so its success can be verified to ensure the entire block is functioning. 
+The diagram outlines a basic strategy for approaching the detection of balls through a process of highlighting, filtering and calculating. Each ball occupies its own spectrum of colours and in varying brightness conditions this spectrum can be highlighted so that the maximum and minimum pixels of balls can be determined. Each block was designed to be testable by certain criteria so its success can be verified to ensure the entire block is functioning. 
 
 \textbf{Edge detection:}
 
-Calculating the luminance space of the image we can observe the brightness of each pixel which after the
+By calculating the luminance space of the image one can observe the brightness of each pixel which after the
 application of a Sobel filter can be used to produce the edge space. This edge space can then be highlighted
-using a threshold this highlighted space will reveal edges. .Each block was designed to be testable by certain
+using a threshold. Each block was designed to be testable by certain
 criteria so its success can be verified to ensure the entire block is functioning.
 
 \textbf{Communication:}
 
-This block facilitates communication between the Arduino ESP connected to the FPGA pins.It will utilise an agreed method to transfer data one way to the Control subsystem. All variables calculated in the analysis of the vision data will be relayed to it.
+This block facilitates communication between the Arduino ESP connected to the FPGA pins. It will utilise an agreed method to transfer data one way to the Control subsystem. All variables calculated in the analysis of the vision data will be relayed to it.
 
 
 \begin{figure}[!htb]
@@ -234,7 +219,7 @@ This block facilitates communication between the Arduino ESP connected to the FP
             \item Consistently highlight pixels belonging to balls in a plain environment.
                 \begin{enumerate}
                     \itemsep-0.2em
-                    \item Highlight the intended colour of ball and no others.
+                    \item Highlight the intended colour of the ball and no others.
                     \item Eliminate (Do not highlight) the environment that is not the intended ball.
                 \end{enumerate}
             \item Filter/Ignore noise data that may exist in the image.
@@ -242,30 +227,30 @@ This block facilitates communication between the Arduino ESP connected to the FP
                     \itemsep-0.2em
                     \item Successfully remove any data that has been highlighted incorrectly when isolating the ball. 
                 \end{enumerate}
-            \item Accurately find minimum and maximum bounds for balls in the environment .
+            \item Accurately finds the minimum and maximum bounds for balls in the environment.
                 \begin{enumerate}
                     \itemsep-0.2em
                     \item Ensure associated Ymin and Ymax are accurate through visual confirmation. 
                 \end{enumerate}
         \end{enumerate}
-  \item Detect obstructions such as unknown visual data .
+  \item Detect obstructions such as unknown visual data.
         \begin{enumerate}
                     \itemsep-0.2em
-                    \item Reveal all Horizontal edges in an image through highlighting confirm visually
+                    \item Reveal all Horizontal edges in an image through highlighting
                     \item Extract meaningful depth data from highlighted edges.
         \end{enumerate}
   \item Relay information on detected objects to Control subsystem for further processing.
         \begin{enumerate}
             \itemsep-0.2em
-            \item Instantiate a memory that can store all data of from analysis of current frame. 
+            \item Instantiate a memory that can store all data from analysis of current frame. 
             \item Relay data gathered and calculated in an agreed format to Control subsystem.
             \item Check relayed data is accurately received on the Command / Control subsystem. 
         \end{enumerate}
 \end{enumerate}
 
-\textbf{My development philosophy / process was the following:}
+\textbf{My development philosophy/process was the following:}
 
-I aimed to recursively improve my design and implementation to ensure a robust and flexible subsystem that could adapt to any new criteria , tests or functionality the team agreed upon as the project progressed. This meant i would follow a development cycle illustrated below.
+I aimed to recursively improve my design and implementation to ensure a robust and flexible subsystem that could adapt to any new criteria, tests or functionality the team agreed upon as the project progressed. This meant I would follow a development cycle illustrated below.
 
 \begin{figure}[hbt!]
     \centering
@@ -274,7 +259,7 @@ I aimed to recursively improve my design and implementation to ensure a robust a
     \caption{Subsystem Development Process}
 \end{figure}
 
-The development of my system would all take place upon the DE-10 FPGA and camera provided based on the demo project provided. All development was limited to the EEEImgProc.v file where i implemented all verilog code necessary to meet my design requirements. Any hardware utilised was initialised here or modified in the project QSYS. I aimed on utilising minimal hardware/implementations to develop  my subsytem meaning i often implemented designs in verilog rather than choosing pre-existing library hardware. This was done to reduce issues when debugging and ensure i was not incorporating functionality that was not necessary in my subsystem.
+The development of my system would all take place upon the DE-10 FPGA and camera provided based on the demo project provided. All development was limited to the EEEImgProc.v file where I implemented all Verilog code necessary to meet my design requirements. Any hardware utilised was initialised here or modified in the project QSYS. I aimed at utilising minimal hardware/implementations to develop the subsystem meaning I often implemented designs in Verilog rather than choosing pre-existing library hardware. This was done to reduce issues when debugging and ensure I was not incorporating functionality that was not necessary for my subsystem.
 
 
 
@@ -289,34 +274,30 @@ The different types of commands that we decided to allow the user to send are as
 \begin{enumerate}
   \item Commands in the form of a coordinate relative to the rovers current position, with the rover deciding the best route to reach the destination.
   \item Direct commands such as move forward and turn that the rover follows exactly.
-  \item Commands to move to a given ball and search for it if it's position is unknown. 
+  \item Commands to move to a given ball and search for it if its position is unknown. 
 \end{enumerate}
 The information that would be sent back to the user can be broken down as follows:
 \begin{enumerate}
-  \item Provide visual indication of the position of any detected balls relative to the rover position.
-  \item Provide indication of the current charge and battery health of the rover.
+  \item Provide a visual indication of the position of any detected balls relative to the rover position.
+  \item Provide an indication of the current charge and battery health of the rover.
   \item Provide a list of the commands the rover still has to complete.
   \item Display the current drive mode that the rover is in.
   \item Display depth data for any object in front of the rover.
 \end{enumerate}
-In order to allow these requirements to be filled a map based system was decided upon, this would allow the user to easily click on a position that they desired the rover to move to whilst also displaying the current position of any balls within the same format. In order to allow for commands to be entered a textual input format would also be needed. In addition to ball detection we also decided to try and find some way of estimating the depth in front of the rover to any obstacle using the difference between two successive frames. It was unclear at the beginning of the project however if this would be possible.
+In order to allow these requirements to be filled a map-based system was decided upon, this would allow the user to easily click on a position that they desired the rover to move to whilst also displaying the current position of any balls within the same format. In order to allow for commands to be entered a textual input format would also be needed. In addition to ball detection, we also decided to try and find some way of estimating the depth in front of the rover to any obstacle using the difference between two successive frames. It was unclear at the beginning of the project if this would be possible.
 \smallbreak
-When calculating the actual commands to send to the rover the command module would use three different modes.
-\begin{enumerate}
-  \item Map mode: In this mode the rover would be sent a small movement to take it towards the target coordinate. This movement would incorporate obstacle avoidance for any balls in the rovers path.
-  \item Command mode: In this mode the rover would be sent a small movement that would be a division of a command sent by the user. The rover would be continuously sent these incremental commands as it completed them until the entire user command was completed.
-  \item Search mode: In this mode the rover would be searching for a given ball, if the balls position was node the same method as map mode would be used, with the ball as the target location. If the balls position was unknown a searching route would have to be implemented instead.
-\end{enumerate}
-It was decided that whenever the rover completed a movement sent to it from command it would send back its change in position and orientation along with any sensor data, this would allow the command module to calculate the new command to send the rover.
+When calculating the actual commands to send to the rover, the command module would use three different modes. Map mode, where the user clicks on the map to send a coordinate, command mode where the user send textual commands and search mode where the user can specify a ball to search for.
+\\
+It was decided that whenever the rover completed a movement sent to it from command, it would send back its change in position and orientation along with any sensor data. This would allow the command module to calculate the new command to send the rover.
 
 \newpage
 \subsubsection{Control}
 
-The Control subsystem main task is to allow fast and efficient data exchange between the server and the rover. This process can be broken down in:
+The Control subsystem's main task is to allow fast and efficient data exchange between the server and the rover. This process can be broken down into:
 \begin{itemize}
-    \item collect processed data provided by the relevant subsystems
-    \item send the collected data to the server for analysis
-    \item receive data back from the server and forward it to the relevant subsystems
+    \item Collect processed data provided by the relevant subsystems
+    \item Send the collected data to the server for analysis
+    \item Receive data back from the server and forward it to the relevant subsystems
 \end{itemize}
 
 The Control subsystem should take advantage of: \newline
@@ -341,21 +322,21 @@ The Control subsystem should take advantage of: \newline
 \end{figure}
 
 The control subsystem needs to communicate with every other subsystem via a suitable communication protocol. 
-This task can broken into smaller sub-tasks:
+This task can be broken into smaller sub-tasks:
 \begin{itemize}
     \itemsep-0.2em
-    \item communication with the Command subsystem
-    \item communication with the Drive subsystem
-    \item communication with the Vision subsystem
-    \item communication with the Energy subsystem
+    \item Communication with the Command subsystem
+    \item Communication with the Drive subsystem
+    \item Communication with the Vision subsystem
+    \item Communication with the Energy subsystem
 \end{itemize}
-In particular the communication between the subsystems should satisfy the following design criteria:
+In particular, the communication between the subsystems should satisfy the following design criteria:
 \begin{itemize}
-    \item communication should be \emph{fast} (i.e. negligible with respect to the data processing time)
-    \item communication should be \emph{reliable} (i.e. corruption of data due to external factors should be minimized)
+    \item Communication should be \emph{fast} (i.e. communication delay for transferring data should be less than 100ms )
+    \item Communication should be \emph{reliable} (i.e. corruption of data due to external factors should be minimized)
 \end{itemize}
 
-Furthermore, the communication protocol should be chosen taking into account the amount of information exchanged with other subsystems (payload size) and whether the communication is unidirectional or bidirectional. A summary of this parameters can be found in the following table:
+Furthermore, the communication protocol should be chosen taking into account the amount of information exchanged with other subsystems (payload size) and whether the communication is unidirectional or bidirectional. A summary of these parameters can be found in the following table:
 
 
 \begin{table}[hbt]
@@ -381,34 +362,34 @@ Command   & Energy, Drive   and Vision data & Very Large   & Bidirectional  $\ve
 
 \subsection{Drive}
 
- Our development and implementation strategy consisted in three main steps:
+ Our development and implementation strategy consisted of three main steps:
  \begin{enumerate}
-     \item \textbf{First, functional model:} a simple moving algorithm was coded based on the optical sensor to meet the basic functional requirements. This model was based on a feedback system that could correct the angle error first and the distance error secondly, both computed comparing the optical sensor and the target coordinates. This model was tested in its functionality and its compatibility with the control unit was checked to have a first general working model. 
-    \item \textbf{Further, optimized models:} more features were progressively added to the main body of the code to optimise the performance, both in terms of time needed to reach a given location and precision of the movement computed and tracked. At this stage, the following additions were considered and tested:
+     \item \textbf{First, functional model:} A simple moving algorithm was coded based on the optical sensor to meet the basic functional requirements. This model was based on a feedback system that could correct the angle error first and the distance error secondly. Both were computed by comparing the optical sensor and the target coordinates. This model was tested in its functionality and its compatibility with the control unit was checked to have a first general working model. 
+    \item \textbf{Further, optimized models:} More features were progressively added to the main body of the code to optimise the performance, both in terms of time needed to reach a given location and precision of the movement computed and tracked. At this stage, the following additions were considered and tested:
 	     \begin{itemize}
-            \item arch trajectory (instead of turning on the spot and moving forward)
-	        \item time-based model in alternative to the optical sensor based one (to avoid the error caused by the optical sensor when the quality of the data is low)
-            \item variable speed implementation to be decided by the server
+            \item Arch trajectory (instead of turning on the spot and moving forward)
+	        \item Time-based model as an alternative to the optical sensor based one (to avoid the error caused by the optical sensor when the quality of the data is low)
+            \item Variable speed implementation to be decided by the server
             \item PI controller for the speed
-            \item calculation of the current at the input of the SMPS to compute the power drawn by the drive unit
+            \item Calculation of the current at the input of the SMPS to compute the power drawn by the drive unit
             \item PI controller for the trajectory
         \end{itemize}
-    On top of the functional testing, for each further model developed, a series of systematic measurements were conducted to evaluate the actual improvement in performance against the ideal behaviour expected when designing. 
-    \item \textbf{Final model decisions:} the different models’ performances were compared against each other in terms of error precision and timed needed for compute a given path. Following a general discussion with the other members of the group, the decision on which model to use as the final one was based on the priorities agreed in accordance with the needs of the vision and command units. 
+    On top of the functional testing, for each further model developed, a series of systematic measurements were conducted to evaluate the actual improvement in performance against the ideal behaviour expected.
+    \item \textbf{Final model decisions:} The different performances were compared against each other in terms of error precision and time needed to compute a given path. Following a general discussion with the other members of the group, the decision on which model to use was based on the priorities agreed in accordance with the needs of the vision and command units. 
  \end{enumerate}
 
 
 
 \textbf{ a.	Optical sensor-based model:}
 
-This first model was designed with the idea of using the data from the optical sensor to implement a closed-loop controlled system in which the location of the rover is adjusted based on the angle and distance measurement to reach the target. After some first functional tests of the sensor, we realised that the coordinates sent to the Arduino are represented in polar form: x = angle computed, y = distance computed. We decided to use polar coordinates throughout the program for more clarity. A detail to be noticed is that those coordinates represent the movements of the optical sensor, and not of the centre of the rover itself.
+This first model was designed with the idea of using the data from the optical sensor to implement a closed-loop controlled system in which the location of the rover is adjusted based on the angle and distance measurement. After the first functional tests of the sensor, we realised that the coordinates sent to the Arduino are represented in polar form: x = angle computed, y = distance computed. We decided to use polar coordinates throughout the program for more clarity. A detail to be noted is that those coordinates represent the movements of the optical sensor, and not of the centre of the rover itself.
 
 \textbf{Moving algorithm:} The moving algorithm implemented consisted of four states (figure 7): 
 \begin{itemize}
-    \item the OFF state, during which the rover does not move, the code is set up and the instruction for the distance and angle to be computed is, contained in the last data received, is yet to be computed. The first time the code will be run, or any other time in which no movement is require, the distance and angle will be both 0 and the state will automatically go to MAX MOVEMENT, waiting for a new instruction.
-	\item the TURN state, during which the rover turns until the angle error between the coordinates of the sensor and the target coordinates is smaller the maximum angle error accepted (set to be 5° for the initial testing). In this state the motor with turn in opposite directions at fixed, equal speed. The direction of the tuning of each will is in accordance with the sign of the angle to be computed (for positive angles the left wheel moves forward and right backward, vice versa for negative angles). The angle is scaled to be in the range -180° to 180°.
-	\item The MOVE state, once the rover is set in the correct orientation, it will start moving forward until the difference between the distance measured by the optical sensor and target distance is smaller than the maximum accepted error (set to 1cm for initial testing)
-	\item The MAX MOVEMENT state: the rover will continue loop between adjusting the distance and the angle until their respective errors are negligible (ideally 0); at this point the state machine will enter in the state of maximum movement computed and both motors will stop. During this state, the angle and distance computed (from the optical sensor) are send to the server and the new instruction is received and scaled to the unit and range of the distance and angle accepted. After the transmission and reception is completed, all the relevant variables are reset, and the state is set to OFF.
+    \item The OFF state, during which the rover does not move. Here the code is set up and the new distance and angle target are defined. The first time the code will be run, or any other time in which no movement is required, the distance and angle will be both 0. In this case, he state will automatically go to MAX MOVEMENT, waiting for a new instruction.
+	\item The TURN state through which the rover rotates until the angle error between the coordinates of the sensor and the target are smaller than the maximum angle error (set to be 5° for the initial testing). In this state, the motor will turn in opposite directions at a fixed equal speed. The direction of the tuning of each will be in accordance with the sign of the angle to be computed (positive angles the left wheel moves forward and right backwards, vice versa for negative angles). The angle is scaled to be in the range of -180° to 180°.
+	\item The MOVE state, where once the rover is set in the correct orientation, it will start moving forward until the difference between the distance measured by the optical sensor and target distance is smaller than the maximum accepted error (1cm for initial testing)
+	\item The MAX MOVEMENT state: The rover will continue to loop between adjusting the distance and the angle until their respective errors are negligible (ideally 0). At this point, the system will be in the state of maximum movement and both motors will stop. During this, the angle and distance computed (from the optical sensor) are sent to the server. The new instruction is received and scaled to the unit and range of the distance and angle. After the transmission and reception are completed, all the relevant variables are reset, and the state is set to OFF.
 \end{itemize}
 
 \begin{table}[hbt]
@@ -425,39 +406,37 @@ MAX MOVEMENT   & stop                                & Send location   and recei
 \caption{Moving Algorithm}
 \end{table}
  
- \begin{figure}
+ \begin{figure}[hbt]
      \centering
-     \includegraphics{movestate.pdf}
+     \includegraphics[scale = 0.8]{movestate.pdf}
      \caption{Moving algorithm state machine}
      \label{fig:my_label}
  \end{figure}
-\textbf{Variable speed:} the implementation of a variable speed of the wheels seemed to be an important feature that could be used to enhance the performance of the movements and that could give more freedom of choice on the command side of the rover. This was implemented by tuning the value of the pulse-width-modulated signal (PWM) input from the Arduino to the gate of the MOSFETs of the H-bridges. Instead of using a digital wire, an analogue wire with values from 0 to 255 was used to control the voltage level perceived by the motor and, consequently, their speed. 
+\textbf{Variable speed:} The implementation of variable speed seemed to be an important feature that could be used to enhance the performance of the movements. More freedom of choice would be available on the command side of the rover. This was implemented by tuning the value of the PWM (Pulse Width Modulation) input from the Arduino to the gate of the MOSFETs of the H-bridges. Instead of using a digital wire, an analogue wire with values from 0 to 255 was used to control the voltage level perceived by the motor and, consequently, their speed. 
 
-\textbf{Arch trajectory:} the initial idea was to implement a different type of trajectory: an arch movement had been implemented to substitute the “turning on the spot and the then moving straight” procedure, to be able to turn whilst moving. This model was then tested and, although the functionality was correct, the loss in speed given by the variable speed of the wheels (against a constant maximum speed for the previous model) did not justified the enhance in performance, given that the original model was already extremely precise and considerably easier to control and its movements to track. It was therefore decided not to pursue this model.
+\textbf{Arch trajectory:} The initial idea was to implement a different type of trajectory. An arch movement had been implemented to substitute the “turning on the spot and the then moving straight” procedure. Hence the rover could turn while moving. This model was then tested and, although the functionality was correct, the loss in speed due to the slowing of the wheels (against a constant maximum speed for the previous model) did not justify it's implementation. The original model was already extremely precise and considerably easier to control and track. It was therefore decided not to pursue this model.
 
-\textbf{PID controller:} a model of a PID controller was designed by us and included in the main code: this was implemented with the idea to better control the precision of the movements, both in terms of turning and moving forward. The setpoint, input and output of the two controllers were respectively: target angle, current angle, and speed of turning for the angle one and target distance, current distance, and speed of moving forward for the distance one. The expected behaviour of this model was to increase the speed to the maximum and then decelerate when approaching the target to better control the precision of the arriving point. The gains of the controller were progressively tuned, with exception of the differential one, which had been noticed to not relevantly influence the performance. 
+\textbf{PID controller:} A model of a PID controller was designed and included in the main code. This was implemented with the idea to better control the precision of the movements when turning or moving forward. The controller for the angle correction compared the angle measured and the target angle. It would then tune the speed of the turn accordingly. The distance controller worked in the similar way, but adjusting the speed used to move forward instead. The expected behaviour of this model was to progressively increase the speed to the maximum and then decelerate when approaching the target to better control the precision of the arriving point. The gains of the controller were progressively tuned, with exception of the differential one, which did not influence the performance significantly during tuning. 
 
-Another version of the PI was also considered to control the trajectory instead (making the rover going backwards in case of overshoot). However, this would have not increased the performance of the since the feedback given by the optical sensor was observed to be working fast enough to not cause any considerable overshoot. Furthermore, the logic of the optical sensor-based model already worked so that if an error in the angle emerges, it will be automatically corrected by turn in the opposite direction.
+Another version of the PI was also considered to control the trajectory instead (making the rover go backwards in case of overshoot). However, this would have not increased the performance of the rover since the feedback given by the optical sensor was observed to be working fast enough to not cause any considerable overshoot. Furthermore, the logic of the optical sensor-based model already worked so that if an error in the angle emerges, it will be automatically be corrected by a turn in the opposite direction.
 
 \textbf{b.	Time-based model:}
 
-After comprehensive testing of the optical sensor-based model was concluded that there are certain limitation in the optical sensor that cannot be avoided: the quality of the data created by the sensor would decrease beyond and acceptable level when the surfaces on which the rover travels are too uniform, translucent or of a light colour, because the sensor is not able to properly detect the movement computed. Therefore, it was noticed the need of an alternative model to be used in these edge cases. This model would not use the feedback of the sensor to calculate the distance and angle yet to be computed, but instead would calculate a time of execution for the turning and the moving forward. These two values are calculated in the code based on the maximum speed of the wheels measured for our model of the rover (60rpm) and the degrees and millimetres to be done.
-Being aware that this a more empirical and imprecise way of proceeding, this algorithm is to be consider only a back-up model for when the quality of the optical data is extremely low and would lead to major errors in the feedback.
+After comprehensive testing of the optical sensor-based model was concluded, there were certain limitations in the optical sensor that could not be avoided: the quality of the data created by the sensor would decrease beyond an acceptable level when the surfaces on which the rover traveled were too uniform, translucent or of a light colour. This is because the sensor is not able to properly detect the movement computed. Therefore, it was decided that there is need of an alternative model to be used in these edge cases. This model would not use the feedback of the sensor to calculate the distance and angle to be computed. Instead it would calculate a time of execution for the turning and moving forward. These two values are calculated in the code based upon the maximum speed of the wheels measured for the rover (60rpm) and the distance or angle to be computed.
+Being aware that this a more empirical and imprecise way of proceeding, this algorithm is to be considered as only a back-up model for when the quality of the optical data is extremely low and could lead to major errors in the feedback.
 
 \textbf{Final model:}
 
-In accordance with the results from the testing of the performance of the previous models, a final, optimal model was created integrating all the successful features in a single program.
+In accordance with the results from the testing, a final more optimised model was created integrating all the successful features in a single program.
 The logic of the code is summarised in figure 8 and includes the following elements:
 \begin{itemize}
-\item 	Error detection and correction: the optical sensor feedback and PI controller check that the direction is right and adjust the movement of the wheels accordingly, as explained. This leads to a maximum error within a margin of 5° and 5mm, and, in general, an error within 10 \%
-\item 	Multiple modes to move depending of the quality of the optical data: with optical sensor feedback if the quality is above a certain level (15 starts are usually a recommended level at which the data is reliable; however, by measuring the performance, 10 stars had been observed to still lead to good data quality)
-\item 	Speed value of the wheels decided by the server within the range 5-60rpm; by default the maximum speed is used
-\item 	Input current drawn from the energy unit computed and value send to the control unit in order to calculate the power consumed. The input current of the SMPS was computed by the measurement of the output current by the current sensing resistor and the formula $I_(in) = V_(out)*I_(out)/V_(in)$ (for more see energy unit)
+\item 	Error detection and correction: The optical sensor feedback and PI controller check that the direction is right and adjust the movement of the wheels accordingly. This leads to a maximum error within a margin of 5° and 5mm. In general the error was within 10\%.
+\item 	Multiple modes to move depending of the quality of the optical data: The optical sensor feedback if the quality is above a certain level (15 stars are usually a recommended level at which the data is reliable; however, by measuring the performance, 10 stars had been observed to still lead to good data quality)
+\item 	Speed value of the wheels decided by the server within the range of 5-60rpm. By default the maximum speed is used.
+\item 	Input current drawn from the energy unit is computed and the value send to the control unit in order to calculate the power consumed. The input current of the SMPS was computed by the measurement of the output current by the current sensing resistor and the formula $I_(in) = V_(out)*I_(out)/V_(in)$ (for more see energy unit)
 
 \item 	Sending and receiving section implemented via SPI (see control unit)
 \end{itemize}
-
-Furthermore, a few adjustments were made to enhance the performance of the rover as a whole, taking into account the need of the vision unit specifically: our idea is that the model has be designed keeping in mind the highest goal of the Mars Rover itself, i.e. to move around in an unknown environment mapping the surrounding. For this reason, we thought that the quality of the images and movements and the precision of the data from the mapping process had to be prioritised over the level of smoothness of the movements themselves or the simplified communication feedback. Therefore, we decided make the communication between the control and drive unit be more frequent by letting the rover send data every 50 millimetres or 20° computed, before continuing to execute the instruction. This has two main benefits: firstly, the mapping and the obstacle detection given by the vision unit is more accurate since the server has a frequent feedback on the current location; secondly, if any sudden change in the surrounding environment occurs or the error from the optical sensor accumulates throughout the instructions, the command has the time to process it and the possibility to adjust the optimal trajectory immediately. This design decision was confirmed after testing the rover and measuring that the delay given by the more frequent transmission of data is very contained (??numbers??).
 
 \begin{figure}[hbt]
     \centering
@@ -466,14 +445,14 @@ Furthermore, a few adjustments were made to enhance the performance of the rover
     \label{figure}
 \end{figure}
 
+Furthermore, a few adjustments were made to enhance the performance of the rover as a whole. Taking into account the need of the vision unit specifically: The idea is that the model has to be designed keeping in mind the highest goal of the Mars Rover itself, i.e. to move around in an unknown environment mapping the surrounding. For this reason, we thought that the quality of the images, movements and the precision of the data from the mapping process had to be prioritised over the smoothness of the movements themselves or the simplified communication feedback. Therefore, we decided make the communication between the control and drive unit more frequent by letting the rover send data every 50 millimetres or 20° computed. This has two main benefits: Firstly, the mapping and the obstacle detection given by the vision unit is more accurate since the server has a frequent feedback on the current location; Secondly, if any sudden change in the surrounding environment occurs or the error from the optical sensor accumulates throughout the instructions, the command has the time to process it and adjust the optimal trajectory immediately. This design decision was confirmed after testing the rover and measuring that the delay given by the more frequent transmission of data is very contained (??numbers??).
 
 \subsection{Energy}
-\newpage
 \subsubsection{Arduino}
 
 \textbf{Data Collection}
 
-Upon initial testing of the Arduino, it became clear that the analogue inputs fluctuate significantly. To mitigate this in both the current and voltage, a 'moving average' filter was implemented which took the 1000 values before the slow loop and summed them in a cumulative variable. This was then divided by 1000 to get the average.
+Upon initial testing of the Arduino, it became clear that the analogue inputs fluctuate significantly. To mitigate this for both the current and voltage, a 'moving average' filter was implemented which took the 1000 values before the slow loop and summed them in a cumulative variable. This was then divided by 1000 to get the average.
 
 \textbf{Charge Strategy}
 
@@ -481,7 +460,7 @@ To get the most capacity out of a single cell, a CC/CV (Constant Current/ Consta
 
 \textbf{SOC}
 
-Measuring the state of charge is difficult to determine in real time due to a range of factors. This includes fluctuations in temperature and the degradation of the cell as the number of charge-discharge cycles increases. The computation power of the Arduino is also another factor to consider and therefore an Enhanced Coulomb Counting method \cite{Ng2009EnhancedBatteries} was decided upon. This will work out the amount of charge going in/out of the cell and thereby the change in the SOC. Therefore, an initial value of the SOC will also be needed. Given the direct relationship between the SOC and OCV (Open Circuit Voltage), a lookup table was extracted from early cell characterisation seen in figure \ref{fig:SOC_OCV}. This is also tightly integrated with SOH Maintenance to allow for auto calibration and integration with the passive balancing algorithm. (Figure \ref{fig:SOCFlow}). 
+Measuring the state of charge is difficult in real time due to a range of factors. This includes fluctuations in temperature and the degradation of the cell as the number of charge-discharge cycles increases. The computation power of the Arduino is also another factor to consider and therefore an Enhanced Coulomb Counting method \cite{Ng2009EnhancedBatteries} was decided upon. This will work out the amount of charge going in/out of the cell and thereby the change in the SOC. Therefore, an initial value of the SOC will also be needed. Given the direct relationship between the SOC and OCV (Open Circuit Voltage), a lookup table was extracted from early cell characterisation seen in figure \ref{fig:SOC_OCV}. This is also tightly integrated with SOH Maintenance to allow for auto calibration and integration with the passive balancing algorithm. (Figure \ref{fig:SOCFlow}). 
 
 \begin{figure}[hbt]
     \centering
@@ -551,7 +530,7 @@ The state of health decreases as the number of charge-discharge cycles begins to
 \end{equation}
 \end{minipage}
 
-Equation \ref{equ:NewChargingCap} states that the new value of the maximum charge capacity is the ratio of the actual DOD at full capacity compared to the initial estimated DOD multiplied by the old value for the maximum capacity. Hence, if the real DOD was lower than estimated, a smaller value of charge capacity is calculated. This can then be used to find a new $\eta_c$ (\ref{equ:ChargeEfficiency}). Similarly, (\ref{equ:NewDischargingCap}) calculates a new discharge capacity by using the ratio of the actual DOD and the initial SOC. This is then applied to the previous value of the discharge capacity. Through this, a re-calibration of the SOH (\ref{equ:SOH}) and $\eta_c$ (\ref{equ:ChargeEfficiency}) can be processed.
+Equation \ref{equ:NewChargingCap} states that the new value of the maximum charge capacity is the ratio of the actual DOD at full capacity compared to the initial estimated DOD multiplied by the old value for the maximum capacity. Hence, if the real DOD was lower than estimated, a smaller value of charge capacity would be calculated. This can then be used to find a new $\eta_c$ (\ref{equ:ChargeEfficiency}). Similarly, (\ref{equ:NewDischargingCap}) calculates a new discharge capacity by using the ratio of the actual DOD and the initial SOC. This is then applied to the previous value of the discharge capacity. Through this, a re-calibration of the SOH (\ref{equ:SOH}) and $\eta_c$ (\ref{equ:ChargeEfficiency}) can be processed.
 \begin{figure}[hbt!]
     \centering
     \includegraphics[scale = 0.65]{Dissipate (3).pdf}
@@ -561,7 +540,7 @@ Equation \ref{equ:NewChargingCap} states that the new value of the maximum charg
 
 \textbf{PV MPPT Algorithm}
 
-PV panels produce a non-linear voltage-current curve which can vary significantly with temperature and luminosity. This multiplied by the changing efficiency of the SMPS leads to a non-linear, dynamic power curve (\ref{fig:PVvoltage}) which needs to be taken advantage of in order to get the maximum power output. It was decided that Incremental Conductance would be used in the MPPT algorithm due to low fluctuations at the peak. The strategy works by making a linear estimation of the gradient using the past sample value as seen in (\ref{fig:Gradient}) and following the flowchart seen in figure \ref{fig:IncrementalConductance}. A positive gradient would mean that the system is on the left hand side of the peak and vice versa for a negative gradient. The function would then change the duty cycle accordingly to change the impedance of the power supply as seen by the PV panel. These duty cycle 'steps' would be larger the steeper the gradient. The MPPT program also tracks if the irradience has changed which would result in no change in voltage but a change in current. 
+PV panels produce a non-linear voltage-current curve which can vary significantly with temperature and luminosity. This multiplied by the changing efficiency of the SMPS leads to a non-linear, dynamic power curve (\ref{fig:PVvoltage}) which needs to be taken advantage of in order to get the maximum power output. It was decided that Incremental Conductance would be used in the MPPT algorithm due to low fluctuations at the peak. The strategy works by making a linear estimation of the gradient using the past sample value as seen in (\ref{fig:Gradient}) and following the flowchart seen in figure \ref{fig:IncrementalConductance}. A positive gradient would mean that the system is on the left hand side of the peak and vice versa for a negative gradient. The function would then change the duty cycle accordingly to change the impedance of the power supply as seen by the PV panel. These duty cycle 'steps' would be larger the for steeper gradients. The MPPT program also tracks if the irradience has changed which would result in no change in voltage but a change in current. 
 \begin{equation}
     \frac{dP}{dV} = \frac{d(VI)}{dV} = I + \frac{dI}{dV} \approx I + \frac{\Delta I}{\Delta V}
     \label{fig:Gradient}
@@ -569,7 +548,7 @@ PV panels produce a non-linear voltage-current curve which can vary significantl
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[scale = 0.65]{IncrementalConductance2 (3).pdf}
+    \includegraphics[scale = 0.6]{IncrementalConductance2 (3).pdf}
     \caption{Incremental Conductance Algorithm \quad Source: Adapted from \cite{Choudhary2014IncrementalConverter}}
     \label{fig:IncrementalConductance}
 \end{figure}
@@ -612,25 +591,25 @@ One can see the classic characteristic PV curves on figure \ref{fig:PVvoltage}. 
 
 \subsubsection{Final State Machine}
 
-The final state diagram can be seen in figure \ref{fig:FinalState}. It should be noted that the various functions providing special capabilities (Dissipation, Communication, etc) stated above run every cycle and so have not been included. Note the dual charging stage, if the MPPT reaches 250mA while trying to get to the peak, it stops and keeps the current approximately at that value by using MPPT and inverse MPPT. Otherwise, the peak of the MPPT is used meaning that it is in operation constantly. It then comes together with the voltage PID. This can be done as the current curve leading up to the 250mA will be linear if the peak is higher than the charging current. Similarly, this will also work if the peak is lower than 250mA as the PID will always decrease. A final circuit diagram can bee seen in Appendix \ref{appendix:Energy}.\ref{fig:FinalCircuit}
-
 \begin{figure}[hbt]
     \centering
-    \includegraphics[width = \textwidth]{Final (3).pdf}
+    \includegraphics[scale = 0.8]{Final (3).pdf}
     \caption{Final State Machine}
     \label{fig:FinalState}
 \end{figure}
 
-\newpage
+The final state diagram can be seen in figure \ref{fig:FinalState}. It should be noted that the various functions providing special capabilities (Dissipation, Communication, etc) stated above run every cycle and so have not been included. Note the dual charging stage, if the MPPT reaches 250mA while trying to get to the peak, it stops and keeps the current approximately at that value by using MPPT and inverse MPPT. Otherwise, the peak of the MPPT is used meaning that it is in operation constantly. It then comes together with the voltage PID. This can be done as the current curve leading up to the 250mA will be linear if the peak is higher than the charging current. Similarly, this will also work if the peak is lower than 250mA as the PID will always decrease. A final circuit diagram can bee seen in Appendix \ref{appendix:Energy}.\ref{fig:FinalCircuit}
+
+
 \subsection{Vision}
 
 \subsubsection{Edge detection implementation:}
 
-We use edge detection to provide more advanced data for obstacle avoidance and route planning . As well as to corroborate the hue analysis that occurs in ball detection. This provides us with a more detailed image of the environment. 
+We use edge detection to provide more advanced data for obstacle avoidance and route planning. It is also used to corroborate the hue analysis that occurs in ball detection. This provides us with a more detailed image of the environment. 
 
-Video data is received from the camera as a continuous stream of pixels or frame packet information. The edge detection process analyses the valid pixels of this stream for each frame forming an edge detected video stream which is analysis can be derived from. Each pixel received is in an RGB format. Where R,G and B are represented by a byte having a value between 0 and 255 . 
+Video data is received from the camera as a continuous stream of RGB pixels or frame packet information. The edge detection processes the video stream to highlight the object outline. Each pixel received is in an RGB format where R,G and B are represented by a byte having a value between 0 and 255. 
 
-The first step in the edge detection process is to calculate the luminance of each pixel from its RGB values. Lumianance or Luma is an important photo-metric measure describing the brightness of a pixel it is often used to produce an achromatic image giving us a more meaningful visual space to extract meaning from. I followed an approximation for the digital CCIR 601 \cite{LumaWikipedia} video standard. This value will be between 0 and 255 and be a weighted sum of the R , G , B values of the pixel. 
+The first step in the edge detection process is to calculate the luminance of each pixel from its RGB values. Luminance or Luma is an important photo-metric measure describing the brightness of a pixel. It is often used to produce an achromatic image giving us a more meaningful visual space to extract information from. An approximation for the digital CCIR 601 \cite{LumaWikipedia} video standard was used. This value will be between 0 and 255 and be a weighted sum of the R, G, B values of the pixel. 
 
 \begin{minipage}{.49\textwidth}
 \begin{equation}
@@ -643,7 +622,7 @@ The first step in the edge detection process is to calculate the luminance of ea
 \end{equation}
 \end{minipage}
 
-We use an approximation as such specific fractions cannot be represented easily as a series of additions and bit shifts in Verilog  without the addition of a large amount of complexity. It was accepted that the small reduction in accuracy was acceptable for our application. As later a threshold would be applied with would highlight low and high lumianances for ease of analysis.
+An approximation is used as representing specific fractions as series of additions and bit shifts in Verilog introduces a large amount of complexity. It was decided that the small reduction in accuracy was acceptable for our application as later a threshold would be applied which would highlight low and high luminances.
 
 \begin{figure}[hbt]
 \includegraphics[scale = 0.3]{ExampleLuminance.PNG}
@@ -653,7 +632,7 @@ We use an approximation as such specific fractions cannot be represented easily 
 \end{figure}
 
 
-Following review of the luminance space image , i observed a large amount of speckled noise like data.I decided the removal of this data through some Gaussian filtering would give me a smoothed luminance space removing an erratic brightness data that may be present in the luminance space. To accomplish this it was necessary to apply a Gaussian filter to the luminance space. This was accomplished though convolution of a 1D Gaussian kernel with a series of horizontal pixels. And returning a Gaussian value which is the convolution product for that specific pixel. See reference \cite{SpatialSmoothing}
+Following the review of the luminance space image, a large amount of speckled noise-like data was observed. Gaussian filtering was used to remove this data to give a smoothed luminance space. This helped in eliminating erratic brightness data that may be present in the luminance space. The Gaussian filtering was accomplished through the convolution of a 1D Gaussian kernel with a series of horizontal pixels and returning a Gaussian value which is the convolution product for that specific pixel. See reference \cite{SpatialSmoothing}
 
 \begin{figure}[hbt]
     \begin{minipage}{.55\textwidth}
@@ -673,7 +652,7 @@ Following review of the luminance space image , i observed a large amount of spe
     \caption{1D x component Gaussian Kernel (12)  and  approximated version (13)}
 \end{figure}
 
-To accomplish convolution i store the current and previous four values of pixel luminances in a buffer called Gaussian\verb|_|buffer , after storing these values i calculate the sum of weighted values in the buffer weighting is accomplished through bit shifting each luminance value according to its position. The weighting values are again approximated as shown above to an acceptable degree of accuracy. Thus the kernel moves through the image data horizontally. The sum of weighted luminances is then returned as a Gaussian value in a new stream.
+To accomplish convolution the current and previous four values of pixel luminances are stored in a buffer called Gaussian\verb|_|buffer. After storing these values, the sum of weighted values is calculated in the buffer. Weighting is accomplished through bit shifting each luminance value according to its position. The weighting values are again approximated as shown above to an acceptable degree of accuracy. Thus the kernel moves through the image data horizontally. The sum of weighted luminances is then returned as a Gaussian value in a new stream.
 
 \begin{figure}[hbt]
 \includegraphics[scale = 0.55]{GaussianBufferjpg.jpg}
@@ -682,19 +661,17 @@ To accomplish convolution i store the current and previous four values of pixel 
 \label{fig:InitalDesign}
 \end{figure}
 
-After this convolution i now have a Gaussian filtered luminance video stream which is ready for edge detection
-
-\newpage
+After this convolution I now have a Gaussian filtered luminance video stream which is ready for edge detection
 
 I attempted two methods when implementing edge detection on the Gaussian filtered luminance video stream. The first being a 3x3 kernel applied across and the second a 1X5 horizontal Sobel filter. Both methods had their benefits and drawbacks which will be discussed. 
 
-\textbf{Method 1 - 3X3 Kernel}
+\textbf{Method 1 - 3X3 Kernel}  - Implementation in Full\verb|_|Sobel branch:
 
 To apply the following kernel it is necessary to have on access the values under the matrix , this stretches across three rows of pixels and three columns.These values are not accessible from the stream so we must create a buffer which stores the previous pixels of the stream making them accessible for the matrix convolution. I attempted to implement this buffer with a bank of registers defined as such:
 \begin{minted}{verilog}
 reg [7:0] luminance_buffer[2:0][(IMAGE_W-1):0] 
 \end{minted}
-This stores the RGB values for all pixels in the three rows necessary. However this implementation took exceedingly long to compile. I then attempted a version using a shift register IP block in the QSYS however i stopped developing this method before the shift register was fully implemented as i decided upon using method two.
+This stores the RGB values for all pixels in the three rows necessary. However this implementation took exceedingly long to compile. I then attempted a version using a shift register IP block in the QSYS however I stopped developing this method before the shift register was fully implemented as I decided upon using method two.
 
 Thus the matrix convolution will can be calculated as such :
 \begin{minted}{verilog}
@@ -708,7 +685,7 @@ assign GYSOBEL = (-1 * ImageMatrix[2][0] ) + (-2 * ImageMatrix[2][1] ) +
 (1 * ImageMatrix[0][2] )
 
 \end{minted}
-To find the square root of the summation as it is not immediately possible in verilog i imported a SQRT function from the web which i reference here \cite{VerilogROOT} (This way not used in the final implementation however). The value GSOBEL was then calculated from GXSOBEL and GYSOBEL in the following way: 
+Finding the square root of the summation is not immediately possible in verilog I imported a SQRT function from the web which I reference here \cite{VerilogROOT} (This way not used in the final implementation however). The value GSOBEL was then calculated from GXSOBEL and GYSOBEL in the following way: 
 \begin{minted}{verilog}
 assign GSOBELSQUARED = ((GYSOBEL)*(GXSOBEL)) + ((GYSOBEL) * (GYSOBEL)) 
 assign GSOBEL = sqrt(GSOBELSQUARED)
@@ -760,9 +737,9 @@ assign GSOBEL = sqrt(GSOBELSQUARED)
     \caption{3X3 Sobel Kernel for horizontal and vertical and final}
 \end{figure}
 
-I chose not to use this method because of a few issues .Firstly the implementation revels both horizontal and vertical edges in the image, however i discovered that only vertical edges are of concern to our rover for avoiding obstacles this is because vertical edges highlight the left and right edges of obstacles which must be avoided. As such it was unnecessary to calculate GX and GSOBEL as they would not be used analysis. Therefore to reduce the complication of design and any usage of unnecessary FPGA hardware i followed method 2. Further to this memory buffer / shift register used was very large in the current design which led to considerable delay in compilation and increased risk of propagation delay IS THIS TRUE?. 
+I chose not to use this method because of a few issues. Firstly the implementation revels both horizontal and vertical edges in the image, however I discovered that only horizontal edges are of concern to our rover for calculating  obstacle proxmity this is because horizontal edges highlight the approaching bottom or top edge of obstacles which must be avoided (Further detail of why this is can be found in command). As such it was unnecessary to calculate GX and GSOBEL as they would not be used in analysis. Therefore to reduce the complication of design and any usage of unnecessary FPGA hardware I followed method 2. Further to this memory buffer / shift register used was very large in the current design which led to considerable delay in compilation and was not an optimised implementation.
 
-\textbf{Method 2- 1X5 horizontal Kernel}
+\textbf{Method 2- 1X5 horizontal Kernel} - Implementation is final master. 
 
 The second method is relatively simpler than the first as we use  a 1D horizontal kernel which  means we must only store the current and four previous pixel RGB values for our convolution calculation. However this method requires us to orient the camera horizontally but results in far simpler buffer and convolution implemented as such (where Gaussian is the filtered stream pixel):
 
@@ -828,7 +805,6 @@ end end
 \end{figure}
 
 
-\newpage
 
 \subsubsection{Ball detection Implementation:}
 
@@ -952,7 +928,7 @@ D = \frac{d}{2tan(\beta/2}
 \end{gather}
 
 \subsubsection{Updating Depth Information}
-Once the position of the balls had been calculated an estimation of the depth to any object not just including balls was calculated. An algorithm was developed for this separately as a proof of concept before beginning work on the rover implementation. The basic idea is that it should be possible to detect the distance towards objects using two different images taken at different positions. The first step to be able to do this was to apply an edge detection algorithm to the image. This was done in testing using the python open cv library. The algorithm we then used for to detect depth on this image was very simple. The principal is that horizontal edges that are closer to the rover will move more between frames than edges that are further from the user. Therefore, the average position of all the white pixels in every vertical row of the image is calculated to measure this change. Another image is then needed taken closer to the object, this was done in testing using a video from a mobile phone using every $20th$ frame. The percentage change of the average position of any white pixels within a vertical row is then taken and this is used as the distance estimator. The results from testing can be shown plotted with the image in figure \ref{fig:CommandUnfilteredVision}. The edge detection version of the photo is shown in figure \ref{fig:Commandbottles}, the photo is of two bottles palced at different distances.
+Once the position of the balls had been calculated an estimation of the depth to any object not just including balls was calculated. An algorithm was developed for this separately as a proof of concept before beginning work on the rover implementation. The basic idea is that it should be possible to detect the distance towards objects using two different images taken at different positions. The first step to be able to do this was to apply an edge detection algorithm to the image. This was done in testing using the python "Open CV" library. The algorithm we then used for to detect depth on this image was very simple. The principal is that horizontal edges that are closer to the rover will move more between frames than edges that are further from the user. Therefore, the average position of all the white pixels in every vertical row of the image is calculated to measure this change. Another image is then needed taken closer to the object, this was done in testing using a video from a mobile phone using every $20th$ frame. The percentage change of the average position of any white pixels within a vertical row is then taken and this is used as the distance estimator. This method is inspired from an extremely simplified version of optical flow, which is used to detect movement in images. The results from testing can be shown plotted with the image in figure \ref{fig:CommandUnfilteredVision}. The edge detection version of the photo is shown in figure \ref{fig:Commandbottles}, the photo is of two bottles placed at different distances.
 
 \begin{figure}[hbt]
     \centering
@@ -969,7 +945,7 @@ Once the position of the balls had been calculated an estimation of the depth to
     \label{fig:Commandbottles}
 \end{figure}
 
-Since this this data is very noisy a moving average filter was taken over the data. This still resulted in several small spikes, and so any spikes that were below a certain width were then removed from the data. This was done by checking each window of the data and seeing the maximum change and maximum fall. If the fall and gain were both over a threshold all the data in the window was set to the minimum of the window. The results from testing using this methodology can be seen in figure \ref{fig:CommandFilteredDepth}. As can be see this does give a good estimator of depth and can certainly be used to notify a user if an object is within the path of the rover. The flow chart for this diagram is shown in figure \ref{fig:CommandDepthFlow}. This was decided to be a good enough proof of concept and so the algorithm was incorporated into the server code with data coming from the rover itself.
+Since this this data is very noisy a moving average filter was taken over the data. This still resulted in several small spikes, and so any spikes that were below a certain width were then removed from the data. This was done by checking each window of the data and seeing the maximum change and maximum fall. If the fall and gain were both over a threshold all the data in the window was set to the minimum of the window. The results from testing using this methodology can be seen in figure \ref{fig:CommandFilteredDepth}. As can be see this does give a good estimator of depth and can certainly be used to notify a user if an object is within the path of the rover. The flow chart for this diagram is shown in figure \ref{fig:CommandDepthFlow}. This was decided to be a good enough proof of concept and so the algorithm was incorporated into the server code with data coming from the rover itself. The server uses data sent after every movement and only uses the new data if it has not changed orientation. 
 
 \begin{figure}[hbt]
     \centering
@@ -1002,10 +978,12 @@ In order to make the Rover fully autonomous a general obstacle avoidance algorit
 The algorithm works in the following way:
 \begin{itemize}
     \item Receive information of the obstacles nearby from the sensors
-    \item Construct a graph with the sensors' information. The graph represents a "map" of the surroundings. Every node on the graph represents a location where the rover is allowed to move. Nodes are removed form the graph where an obstacle is present. A fixed weight of one is assigned to the edge connecting a node to its neighbors.
+    \item Construct a graph with the sensors' information. The graph represents a "map" of the surroundings. Every node on the graph represents a location where the rover is allowed to move. Nodes are removed form the graph where an obstacle is present. A fixed weight of one is assigned to the edge connecting a node to any of its neighbors.
     \item An algorithm to find the shortest weighted path between the location of the rover and the destination is applied.
-    \item as the Rover moves towards the destination the map is
+    \item As the Rover moves towards the destination, the "map" is updated with new obstacle information. The shortest weighted path to the destination is recomputed and the Rovers changes direction accordingly
 \end{itemize}
+
+\textbf{Best path algorithm} Dijkstra's algorithm was used to find the shortest path between two points in the "map". This was later on improved and transformed in a A* algorithm by adding a heuristic function to give priority to nodes closer to the destination. The code for these implementations was adapted from \cite{AWikipedia},\cite{AAB} and \cite{ImplementationA}.
 
 
 
@@ -1064,68 +1042,68 @@ The user interface was built using the flutter toolkit from google. This meant t
 \subsubsection{Message protocol} 
 In order to communicate with the Drive, Vision and Energy subsystems a general message protocol has been designed to ensure that only valid data is received. The message is composed by:
 \begin{itemize}[noitemsep]
-    \item a Start of Message (SOM) character, used to identify the beginning of the message
-    \item the payload of the message. The size and structure of the payload is fixed and depends on the specific subsystem considered.
-    \item an End of Message (EOM) character, used to identify the end of the message
+    \item Start of Message (SOM) character, used to identify the beginning of the message.
+    \item The payload of the message. The size and structure of the payload is fixed and depends on the specific subsystem considered.
+    \item an End of Message (EOM) character, used to identify the end of the message.
 \end{itemize}
 
 Messages are constructed and sent byte by byte according to the protocol specified above.
 The transmitter sends a message in the following way:
 \begin{itemize}[noitemsep]
-    \item send SOM
-    \item send the payload. Each subsystem expects data (characters) to be in a specific order. It is important that this predefined order is respected to communicate successfully. 
-    \item send EOM
+    \item Send SOM.
+    \item Send the payload. Each subsystem expects data (characters) to be in a specific order. It is important that this predefined order is respected to communicate successfully. 
+    \item Send EOM.
 \end{itemize}
 This ensures that the receiver can safely receive a message by:
 \begin{itemize}[noitemsep]
-    \item wait until Start of Message character is received
-    \item receive the payload of the message
-    \item stop receiving when the End of Message character is encountered
+    \item Wait until Start of Message character is received.
+    \item Receive the payload of the message.
+    \item Stop receiving when the End of Message character is encountered.
 \end{itemize}
+
+The diagram in Figure \ref{fig:SendAndReceive} shows how data is sent and received.
 
 \begin{figure}[hbt]
     \centering
     \includegraphics[width = \textwidth]{Send_and_receive.pdf}
-    \caption{A simulated plot of the spiral movements of the rover}
-    \label{fig:CommandSpiralView}
+    \caption{Sending and Receiving data}
+    \label{fig:SendAndReceive}
 \end{figure}
-
 
 
 \subsubsection{Data Timing} 
 The ESP32 is what controls and manages the flow of information. It collects data from every subsystem, sends it to the server for processing and finally receives back data to reach the next destination.
-\smallbreak
-The development and implementation strategy consisted in:
 
-\paragraph{independent communication with each subsystem}
-Priority was given to implementing communication between Control and each single subsystem. A suitable message protocol was designed according to the data exchanged with each subsystem. Tests were carried out making sure that the data sent from one subsystem matched with the data received on by the other subsystem.
 
-\paragraph{general communication between subsystems $\vert$ Version 1}
+\paragraph{Independent communication with each subsystem:}
+Priority was given to implementing communication between Control and each single subsystem. A suitable message protocol was designed according to the data exchanged with each subsystem. Tests were carried out making sure that the data sent from one subsystem matched with the data received by the other subsystem.
+
+\paragraph{General communication between subsystems $\vert$ Version 1}
 The next step was designing the general data flow between every subsystem. JSON  documents were chosen as  our  file  format  for  data  interchange because:
 \begin{itemize}
-    \item JSON documents provides an easy way of merging the data collected from each subsystem in a single file
-    \item There are well documented libraries for ESP32 that make the serialization/deserialization process easy for the Control subsystem and the Command subsystem
+    \item JSON documents provide an easy way of merging the data collected from each subsystem in a single file
+    \item There are well documented libraries for ESP32 that make the serialization/de-serialization process easy for the Control subsystem and the Command subsystem
 \end{itemize}
 The data flow is \textbf{sequential} and data is received in order from Drive, Energy and Vision. A JSON document is constructed with the collected data and sent to Command. Finally the response form Command is sent to Drive.
 
-\paragraph{general communication between subsystems $\vert$ Version 2}
-Our design specification required fast bidirectional communication between Energy and Control. This has been the biggest challenge in the implementation of the Control subsystem. The Energy arduino code would not function correctly if delays due to receiving data are introduced. The source of this delay are the computations performed on the server and the inherent single delays due to the sequential communication with every other subsystem. \newline
-The solution that we adopted for this problem was \textbf{parallel} communication.
+\paragraph{General communication between subsystems $\vert$ Version 2}
+Our design specification required fast bidirectional communication between Energy and Control. This has been the biggest challenge in the implementation of the Control subsystem. The Energy arduino code would not function correctly if delays due to receiving data are introduced. The source of this delay are the computations performed on the server and the inherent single delays due to the sequential communication with every other subsystem. The solution that we adopted for this problem was \textbf{parallel} communication.
 This was achieved by exploiting  the dual-core nature of the ESP32. In particular the communication flow was split between the two cores in the following way: 
 \begin{itemize}
     \item \emph{Core1} manages receiving data from Drive, Energy and Vision. It also manages communication with the server and forwards data to the Drive subsystem to compute the next move
     \item \emph{Core2} continuously sends data to Energy. This ensures that new data is always ready to be received and hence there are no delays from the point of view of the energy subsystem due to to communication
 \end{itemize}
 
+The flow of information is described in Figure \ref{fig:DataFlowDualCore}.#
 
 
 
-The flow of information proceeds as follows:
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width = \textwidth]{esp32_flowchart.pdf}
+    \includegraphics[scale=0.5]{esp32_flowchart.pdf}
     \captionsetup{justification=centering}
     \caption{High Level data flow}
+    \label{fig:DataFlowDualCore}
 \end{figure}
 
 
@@ -1136,35 +1114,41 @@ For each communication protocol speed of communication, reliability, direction o
 
 \paragraph{UART} The UART communication protocol has been chosen for data transmission between Drive and Control and between Energy and Control. 
 In particular UART was chosen because: 
-\begin{itemize}
-    \item it is fast enough for the application: the Drive and Energy subsystem only need to send small amount of data (small payload size)
-    \item it has in-built error detection and correction
-    \item it allows full-duplex communication. Full-duplex is essential for Control-Energy communication as it allows receiving and sending data at the same time
-    \item it's easier to implement than SPI
+\begin{itemize}[noitemsep]
+    \item It is fast enough for the application: the Drive and Energy subsystem only need to exchange small amounts of data (small payload size)
+    \item It has in-built error detection and correction
+    \item It allows full-duplex communication. Full-duplex is essential for Control-Energy communication as it allows receiving and sending data at the same time
+    \item It is easier to implement than SPI
 \end{itemize}
 
 
 \paragraph{SPI} The SPI communication protocol has been chosen for data transmission between Vision and Control.
 In particular SPI was chosen because: 
-\begin{itemize}
-    \item it allows for high speed data transmission and is faster than UART or I2C. This makes it suitable for transmitting large amount of data such as image data received from Vision  (large payload size)
-    \item it provides robust error detection features
+\begin{itemize}[noitemsep]
+    \item It allows for high speed data transmission and is faster than UART or I2C. This makes it suitable for transmitting large amount of data such as image data received from Vision  (large payload size)
+    \item It provides robust error detection features
 \end{itemize}
 
 
 \paragraph{WiFi and HTTP} The Rover communicates with the remote server using WiFi.
 WiFi was chosen over Bluetooth because:
-\begin{itemize}
+\begin{itemize}[noitemsep]
     \item WiFi range is much bigger than Bluetooth range. This means that the rover can explore a wider area of the Mars surface whilst still communicating with the Server
     \item WiFi provides better wireless security than Bluetooth making unauthorized accesses to the server harder
     \item WiFi connection is faster than Bluetooth. This allows efficient data exchange between the Rover and the Server
 \end{itemize}
 
-Data is exhanged between Control and Command using HTTP GET requests. This protocol was chosen due to compatibility with the JSON documents library used on the ESP32.
+Data is exchanged between Control and Command using HTTPS POST requests. HTTPS was chosen over other standards because:
+\begin{itemize}[noitemsep]
+    \item It is fast enough for the application: it satisfies the speed design criteria standards
+    \item It provides enhanced security by encrypting the data exchanged
+    \item It is compatible with the JSON documents library used on the ESP32.
+\end{itemize}
+ 
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[scale=0.60]{Communication_protocols.pdf}
+    \includegraphics[scale=0.7]{Communication_protocols.pdf}
     \captionsetup{justification=centering}
     \caption{Communication Protocols}
 \end{figure}
@@ -1205,7 +1189,6 @@ The tests of the drive subsystem conducted throughout the project were of the fo
 \textbf{Testing with the control and command unit}
 
 For each model, the communication with the control unit was tested making sure the data sent and received was correct and that the functionality of the rover was not compromised. The delay measured between the end of the current instructions and the beginning of the next execution was measured to be??? below 0.5 sec??, meaning that the communication is fast enough to not cause a major delay between movements and allowing the instruction to be rather short but frequently updated. Various tests were conducted to check that the current location computed from the optical sensor coordinates was correctly updated on the monitor of the website and that the next instruction was calculated without errors.
-\newpage
 
 \subsection{Energy}
 
@@ -1279,16 +1262,12 @@ A single PV panel was first characterised to give a baseline for the MPPT progra
 \end{figure}
 
 
-
-
-\newpage
-
 \subsection{Vision}
 I will be testing the subsystem according to the design criteria laid out in the problem definition and design criteria of vision section. Each criteria will be assessed and evaluated to determine whether it has been met and what could be done further to meet it. 
 
 \textbf{Ball Detection Testing: }
 
-To collect this i had to use a black background for the coloured balls and a white background for the black ball. I examined the output streams of each. I found that a camera gain of 0 was the preferable test setting also. 
+To collect this I had to use a black background for the coloured balls and a white background for the black ball. I examined the output streams of each. I found that a camera gain of 0 was the preferable test setting also. 
 
 \begin{figure}[hbt!]
     \centering
@@ -1305,11 +1284,9 @@ To collect this i had to use a black background for the coloured balls and a whi
     \caption{Black ball detection}
 \end{figure}
 
-\textit{Criteria one and two} are shown to be operational for all balls in stated conditions. The highlighting was unique to each ball, it was however susceptible to differing brightness conditions which meant the gain of the camera had to be adjusted to a low value. Further to this without a solid background the possibility for the incorrect highlighting of colour or unexpected brightness in the background was greater so often a solid background was required for testing. 
-
-\textit{Criteria three} is Shown to work in the filter implementation which removed non constant white horizontals , i found that sometimes the image sometimes showed reduced noise occurring. This means i should increase the size of my noise filtering buffer to further increase the intensity of noise reduction. However it worked satisfactorily for non-reflective backgrounds. 
- 
-\textit{Criteria Four : } Can be seen from testing images ymin ymax and xmin xmax matching our ball highlighted pixels. Further testing of the ditance calculated was done in command testing.
+\textit{Criteria one and Criteria two} are shown to be operational for all balls in stated conditions. The highlighting was unique to each ball, it was however susceptible to differing brightness conditions which meant the gain of the camera had to be adjusted to a low value. Further to this without a solid background the possibility for the incorrect highlighting of colour or unexpected brightness in the background was greater so often a solid background was required for testing. 
+\textit{Criteria three} is Shown to work in the filter implementation which removed non constant white horizontals , I found that sometimes the image sometimes showed reduced noise occurring. This means I should increase the size of my noise filtering buffer to further increase the intensity of noise reduction. However it worked satisfactorily for non-reflective backgrounds. 
+\textit{Criteria Four : } Can be seen from testing images ymin ymax and xmin xmax matching our ball highlighted pixels. Further testing of the distance calculated was done in command testing.
 
 
 \textbf{Edge Detection Testing: }
@@ -1330,25 +1307,13 @@ The aim of this section was to detect obstructions from unknown visual data . I 
     \caption{Horizontal oriented camera analysis}
 \end{figure}
 
-\textit{Criteria One : }Reveal all Horizontal (Vertical for horizontally oriented camera) edges in an image through highlighting confirm visually. 
-
-This can seen to be met in the Horizontally oriented camera analysis figure and. 
-
-\textit{Criteria Two : } Extract meaningful depth data from highlighted edges. 
-
-This was successfully accomplished the the sectioning and average white pixel  position calculation in that section to give can be seen further in command implementations algorithms to find depth. 
+\textit{Criteria One : } We can see that depending on the orientation of the camera either vertical or horizontal edges are highlighted the Horizontally oriented camera analysis figure reveals the horizontal edges and was the orientation used in our final design. \textit{Criteria Two : } was successfully accomplished the the sectioning and average white pixel  position calculation in that section to give can be seen further in command implementations algorithms to find depth. 
 
 \textbf{Communication Testing: }
 
-This sections aim was to Relay information on detected objects to Control subsystem for further processing . To test its function i printed the received byte values on the serial monitor of the Arduino ESP it was connected to. I measured their accuracy and consistency by comparing the expected value to the received across multiple messages. 
+This sections aim was to Relay information on detected objects to Control subsystem for further processing . To test its function I printed the received byte values on the serial monitor of the Arduino ESP it was connected to. I measured their accuracy and consistency by comparing the expected value to the received across multiple messages. 
 
-\textit{Criteria One : }Instantiate a memory that can store all data of from analysis of current frame.
-
-Shown to  be met by the inclusion of our array of registers :  \mintinline{verilog}{reg [7:0]mem[96:0];}
-
-\textit{Criteria Two : }Relay data gathered and calculated in an agreed format to Control subsystem.
-
-Details for this format can be found in both the vision and control implementations but a summary can be seen below alongside an annotated serial monitor output of the Arduino : Thus we can see an see this criteria is satisfactorily met. 
+\textit{Criteria One : } Shown to  be met by the inclusion of our array of registers :  \mintinline{verilog}{reg [7:0]mem[96:0];} , storing all data of from analysis of current frame. \textit{Criteria Two : } We can see the format in both the vision and control implementations but a summary can be seen below alongside an annotated serial monitor output of the Arduino : Thus we can see an see this criteria is satisfactorily met. \textit{Criteria Three : } The figure below reveals our data is received in the intended format with values associated to what we expect this consistently occurred across messages during testing. Further to this to ensure a robust design we implemented safeguards on the command subsystem which sanity check data before using it. Thus we can safely say the relayed data is accurate. 
 
 \begin{figure}[hbt!]
   \begin{minipage}[b]{0.44\textwidth}
@@ -1365,34 +1330,65 @@ Details for this format can be found in both the vision and control implementati
   \end{minipage}
 \end{figure}
 
-\textit{Criteria Three : }Check relayed data is accurately received on the Command / Control subsystem.
-
-Figure above reveals our data is received in the intended format with values associated to what we expect this consistently occurred across messages during testing. Further to this to ensure a robust design we implemented safeguards on the command subsystem which sanity check data before using it. Thus we can safely say the relayed data is accurate. 
-
-\newpage
-
 \subsection{Command}
 \subsubsection{Testing Communication}
-The communication through the API was tested using the "postman" app for HTTP requests. This application makes it easy to send POST and GET requests. The results of sending different fake rover movements and the resulting move commands from the server could easily be tested to ensure that the data was as expected. This also made it easier to work on the command system independently from the control system. Each of the three command modes was tested this way to ensure they gave the expected behaviour. The data sent to the interface could also be check for validity in different situations.
+The communication through the API was tested using the "postman" app for HTTP requests. This application makes it easy to send POST and GET requests. The results of sending different fake rover movements and the resulting move commands from the server could easily be tested to ensure that the data was as expected. This also made it easier to work on the command system independently from the control system. Each of the three command modes was tested this way to ensure they gave the expected behaviour. The data sent to the interface could also be check for validity in different situations. The actual movement testing is discussed in the drive section.
+
 \subsubsection{Testing Ball Positions}
-As previously discussed the "matplotlib" python library was used for testing the map to ensure that the data looked roughly as expected, however it was also necessary to check the data numerically. The position of the balls on the server was checked to be as expected numerically after several movements and rotations were sent to the command system, the balls were checked to be tracked as expected in all of the four quadrants of the map to ensure that the conversion between Cartesian and polar coordinates was correct.  
-\subsubsection{Testing Speed of Move Generation}
-The speed of the server to make a movement decision in each of the three modes, not including the time taken to reach control was tested to ensure that the delay was acceptable. The tests were taken as an average of running the move creation 10000 times with random inputs to the system. The results from the testing are in the following table. As can be seen the creation of one movement took in the order of 100th of a millisecond which is a negligible amount of time next to the delay in the transfer of information over the internet
-\begin{center}
-\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+As previously discussed the "matplotlib" python library was used for testing the map to ensure that the data looked roughly as expected, however it was also necessary to check the data numerically. The position of the balls on the server was checked to be as expected numerically after several movements and rotations were sent to the command system. The balls were also checked to be tracked as expected in all of the four quadrants of the map to ensure that the conversion between Cartesian and polar coordinates was correct. When first testing considerable errors were found when the ball was near the edge of the screen or too close to the rover. The was caused by the ball being only half on the screen and so the ball data was checked against certain conditions to ensure both edges were far enough within the field of view before using the data. We then tested the accuracy of the distance measurements, to test this balls were placed on marked positions in front of a solid background and the depth calculation result was read from the interface. We found that the when the ball was closer than 12cm to the camera the ball went over the edges of the camera view resulting in a distorted distance calculation. Due to this balls that were calculated to be within this margin are rejected by the server. It was also found that balls less well defined by the hue space had greater errors, this matched the results in vision testing where we can see the highlighting for blue and pink is less effective. The results of this testing can be seen in table \ref{tab:BallDistanceTest}.
+
+\begin{table}[hbt]
+\centering
+\begin{tabular}{ |c||p{1cm}|p{1cm}|p{1cm}||p{1cm}|p{1cm}|p{1cm}||c|  }
  \hline
- \multicolumn{4}{|c|}{Total Time to Generate 10000 Moves} \\
+ Ball Colour & \multicolumn{3}{|c||}{Actual Distance (cm)} &  \multicolumn{3}{|c||}{Calculated Distance (cm)} & Error\\
  \hline
- Mode & Command & Map & Search\\
- \hline
- Time (s)  & 0.06    &A 0.12 &   0.23\\
+ Blue & 15 &30 &50 & 19 & 36 & 60 & 21\% \\
+ Green & 15 & 30 & 50 & 16 & 32 & 56 & 9\% \\
+ Black & 15 & 30 & 50 & 14 & 33 & 59 & 11\% \\
+ Orange & 15 & 30 & 50 & 17 & 35 & 55 & 12\% \\
+ Pink & 15 & 30 & 50 & 20 & 39 & 62 & 27\% \\
  \hline
 \end{tabular}
-\end{center}
+\caption{\label{tab:BallDistanceTest} Average Error of Ball Position at Different Distances}
+\end{table}
+\subsubsection{Testing Depth Detection}
+In testing the depth detection algorithm we were unable to get a smooth estimator of depth in many directions. We were able to detect if an object was moving directly towards the rover, which is still useful in notifying the user of a potential collision. An example of this working can be seen in the video at time 1:18. 
 
-\subsubsection{Testing Communication Speed}
+\subsubsection{Testing Speed of Move Generation}
+The speed of the server to make a movement decision in each of the three modes, not including the time taken to reach control was tested to ensure that the delay was acceptable. The tests were taken as an average of running the move creation 10000 times with random inputs to the system. The results from the testing are in table \ref{tab:MoveGeneration}. As can be seen the creation of one movement took in the order of 100th of a millisecond which is a negligible amount of time next to the delay in the transfer of information over the internet
+\begin{table}[hbt]
+\centering
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|p{3cm}|  }
+\hline
+ Mode & Command & Map & Search\\
+ \hline
+ Time (s)  & 0.06    &A 0.24 &   0.31\\
+ \hline
+\end{tabular}
+\caption{\label{tab:MoveGeneration} Total Time to Generate 10000 Moves}
+\end{table}
 
 \subsubsection{Testing Obstacle Avoidance}
+The obstacle avoidance system was tested with multiple balls and routes to ensure that the main functionality was working correctly, which it was found to be. The obstacle avoidance was also tested separately from the actual rover using a function for printing the map and the route adapted from the sources used \cite{AAB}\cite{ImplementationA}. We then decided to test the speed of the two different algorithms for finding the optimal route, Dijkstra and A-Star. Table \ref{tab:MoveGeneration} shows the results from testing the two modes with varying number of balls. As can be seen there is no real time difference between the two options within this ball range. As the maximum number of balls we have is 5 either option is clearly fine.
+\begin{table}[hbt]
+\centering 
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|  }
+ \hline
+ Mode & Number of Balls & Time (ms) \\
+ \hline
+ Dijkstra & 50   & 0.018\\
+ A-Star & 50   & 0.016\\
+ Dijkstra & 70   &0.043\\
+ A-Star & 70   &0.046\\
+ Dijkstra & 100 &0.062\\
+ A-Star & 100   &0.078\\
+ Dijkstra & 150   &0.080\\
+ A-Star & 150   &0.091\\
+ \hline
+\end{tabular}
+\caption{\label{tab:Optimal Route} Time Taken To Find Optimal Route}
+\end{table}
 
 
 \subsection{Control}
@@ -1425,24 +1421,25 @@ No error was detected in any of the tests run, which brought us to the conclusio
 The speed of data transmission for UART and SPI can be adjusted to meet the design criteria by picking an appropriate baud-rate and selecting a clock divider for UART and SPI communication respectively.
 The speed of data transmission for HTTP over WiFi has been measured by sending messages with a fixed payload and measuring the average delay for the full data transmission.
 
-\begin{center}
-\begin{tabular}{ |c|c|c| } 
-\hline
-communication protocol & speed of data transmission  \\
-\hline
-\multirow{3}{4em}{UART \\ SPI \\ HTTP} & ~115200 bits/sec  \\ 
-& ~2000000 bits/sec \\ 
-& TODO  \\ 
-\hline
+\begin{table}[hbt]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Communication   Protocol & Speed of data   transmission \\ \midrule
+UART                     & 115200 bits/s                \\
+SPI                      & 2000000   bits/s             \\
+HTTP                     & 70 ms latency                  \\ \bottomrule
 \end{tabular}
-\end{center}
-
-
-
-
-
+\caption{Speed of Transmission}
+\end{table}
 
 \subsection{Integration}
+Throughout the development and implementation processes of the modules, 
+
+
+
+
 
 \newpage
 \section{Evaluation and Critical analysis}
@@ -1450,9 +1447,14 @@ communication protocol & speed of data transmission  \\
 
 \textbf{Energy Final evaluation:} Though the criteria for the Energy subsystem is clearly defined, there are multiple ways the specification could have been satisfied with varying degrees of success. A main challenge in getting an accurate SOC and SOH estimation has been dealing with the quantization error of the analogue ports. The moving average filter has worked well in mitigating this but a highly accurate system would require a Kalman filter. This was not used as it is computationally extensive, though it could have been offloaded to Control. Having an estimate of the current on the other side of the SMPS is also not ideal and in the future this should be accounted for. An MPPT algorithm based upon Incremental Conductance worked well in most conditions but, as seen during testing, it struggled if the slope was near vertical. A perturb and observe method may have worked better with this extreme case. Overall, the system met the specification set but a main problem would be the capacity as only 2 cells are in use. This unfortunately is a limitation of the SMPS and a possible solution would be to have the cells in a 2x2 configuration. This would however compromise on safety due to unwanted auto balancing between the cells. 
 
-\textbf{Vision Final evaluation:}  I was happy the design criteria of my subsystem were mostly met by the final implementation. The edge detection process successfully allowed for unidentified (Non ball) objects to be detected and displayed which was a great success. However I would aim for further noise elimination or a higher tolerance for edge high-lighting as it was very susceptible to differing brightness and shadowing on flat surfaces.  Ball detection was again a robust process for colours such as green ,orange, blue, red (All well-defined hue spaces) but adjusting of the camera gain and environment was required to isolate the black ball. Further to this, if a significant amount of constant colour existed, it could affect the detection to tackle this. I would develop a more advanced elimination of non-ball highlighting. Overall the vision system achieved its high-level objectives for obstacle avoidance and target identification. 
+\textbf{Vision Final evaluation:} I was happy the design criteria of my subsystem were mostly met by the final implementation. The edge detection process successfully allowed for unidentified (Non ball) objects to be detected and displayed which was a great success. However I would aim for further noise elimination or a higher tolerance for edge high-lighting as it was very susceptible to differing brightness and shadowing on flat surfaces.  Ball detection was again a robust process for colours such as green ,orange, blue, red (All well-defined hue spaces) but adjusting of the camera gain and environment was required to isolate the black ball. Further to this, if a significant amount of constant colour existed, it could affect the detection to tackle this. I would develop a more advanced elimination of non-ball highlighting. Overall the vision system achieved its high-level objectives for obstacle avoidance and target identification. 
 
-\textbf{Control Final evaluation:} Although the design criteria for the Control subsystem were generally met, a few improvements could be made to improve the communication design. %%obstacle avoidance expansion for hills and throughs %%%
+\textbf{Control Final evaluation:} Although the design criteria for the Control subsystem were met, a few improvements could be made to improve the communication design. The obstacle avoidance algorithm could have been implemented locally on the ESP32. In this way the delay introduced by continuously exchanging data with the Server to receive the next move could have been removed. Furthermore, WebSockets could have been used instead of HTTPS to reduce the latency for wireless communication with the Server.
+
+\textbf{Command Final evaluation:} The command subsystem met the desired requirements in terms of providing all the information necessary to the user and creating commands to send to the rover. Several features were successfully implemented as well as possible with the data available, such as terrain mapping, depth estimation and the ability to search for balls. The obstacle avoidance system, whilst functioning as expected could have been improved by adding an estimation of terrain suitability to find a better path. It could also have been improved by changing the way the graph is constructed to only contain nodes next to obstacles to increase speed of computation and find a more optimal route. 
+
+\textbf{Rover Final evaluation:} The final version of the rover system achieved all requirements outlined in the project brief - the rover successfully achieved communication with the server, detected the coloured balls and avoided them. On top of the basic criteria, several additional functions and more sophisticated implementations were developed and implemented in the final rover. This includes the use of edge detection in the Vision module to detect non-ball objects; the spiral motion used to search for the balls in the autonomous mode implemented by Command; the bi-directional communication between the Control and Energy modules.
+
 
 \newpage
 \section{Essay 'Intellectual Property'}
